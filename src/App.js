@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import L from 'leaflet'
 import axios from 'axios'
 import './App.css'
-import 'leaflet/dist/leaflet.css' // Ensure Leaflet CSS is imported
+// import 'leaflet/dist/leaflet.css' // Ensure Leaflet CSS is imported
 
 function App() {
   const [map, setMap] = useState(null)
@@ -19,6 +19,8 @@ function App() {
   useEffect(() => {
     // Initialize map when component mounts
     const initializeMap = () => {
+      if (!mapRef.current) return // Ensure map container is available
+
       const mapInstance = L.map(mapRef.current).setView(
         [-0.398221, 36.960749],
         13
@@ -35,9 +37,7 @@ function App() {
       setMap(mapInstance)
     }
 
-    if (!map) {
-      initializeMap()
-    }
+    initializeMap() // Initialize map on component mount
 
     return () => {
       // Clean up map when component unmounts
@@ -45,7 +45,7 @@ function App() {
         map.remove()
       }
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // Empty dependency array ensures this runs once on mount
 
   const onMapClick = (e) => {
     const { lat, lng } = e.latlng
@@ -117,7 +117,7 @@ function App() {
       getAddress(latParam, lngParam)
       placeMarker(latParam, lngParam)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, []) // Empty dependency array ensures this runs once on mount
 
   return (
     <div className="App">
